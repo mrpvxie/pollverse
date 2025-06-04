@@ -98,22 +98,23 @@ def b64encode_image(image_data):
 app.jinja_env.filters['b64encode_image'] = b64encode_image
 
 def send_mail(from_user,to_user,body):
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    print("this is receiver mail -> ",to_user)
-    server.login(user="xieminiproject@gmail.com", password=app_pass)
-    msg = MIMEMultipart()
-    msg['From'] = from_user
-    msg['To'] = to_user
-    msg['Subject'] = "SUBJECT"
+    print("send mail is commented due to some issues")
+    # import smtplib
+    # from email.mime.multipart import MIMEMultipart
+    # from email.mime.text import MIMEText
+    # server = smtplib.SMTP("smtp.gmail.com", 587)
+    # server.starttls()
+    # print("this is receiver mail -> ",to_user)
+    # server.login(user="xieminiproject@gmail.com", password=app_pass)
+    # msg = MIMEMultipart()
+    # msg['From'] = from_user
+    # msg['To'] = to_user
+    # msg['Subject'] = "SUBJECT"
     
-    msg.attach(MIMEText(body, 'html'))
+    # msg.attach(MIMEText(body, 'html'))
 
-    server.sendmail(from_user, to_user, msg.as_string())
-    server.quit()
+    # server.sendmail(from_user, to_user, msg.as_string())
+    # server.quit()
 
 def is_logged(function):
     global logged_in  
