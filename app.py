@@ -40,8 +40,9 @@ from_email = "xieminiproject@gmail.com"
 # app_pass = "ibpp vdjr pukx fyek"
 
 load_dotenv() 
-app_pass = os.getenv("app_pass")
-secret_key = os.getenv("SECRET_KEY")
+# app_pass = "fzli uerd ufci ehqg"
+secret_key ="thisissecretkey"
+app_pass = os.getenv("APP_PASS")
 sentiment_api_key = os.getenv("SENTIMENT_API_KEY")
 
 app =  Flask(__name__)
@@ -102,12 +103,13 @@ def send_mail(from_user,to_user,body):
     from email.mime.text import MIMEText
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
+    print("this is receiver mail -> ",to_user)
     server.login(user="xieminiproject@gmail.com", password=app_pass)
     msg = MIMEMultipart()
     msg['From'] = from_user
     msg['To'] = to_user
     msg['Subject'] = "SUBJECT"
-
+    
     msg.attach(MIMEText(body, 'html'))
 
     server.sendmail(from_user, to_user, msg.as_string())
@@ -214,7 +216,7 @@ def common_variable():
                 comment = comment)
      
 @app.route('/register',methods = ['GET','POST'])
-def register():
+def register(): #here123
     global not_registering,current_user_id,current_user,logged_in,current_user_pic,anonymous_mode 
     not_registering = 0
     
@@ -295,7 +297,6 @@ def login():
                 current_user = user
                 current_user_email = entred_email
                 anonymous_mode = 0
-                print(f">>>>>> {entred_email} has logged in <<<<<")
                 return redirect(url_for(f'{current_page}'))
             else:
                 current_user_email = entred_email
@@ -335,6 +336,7 @@ def sort_comment(value):
 
 @app.route('/') 
 def index(): 
+    print("------------------ THIS IS INDEX ROUTE -------------------")
     global current_user_id,current_user,login_form,logged_in,current_page,global_comments,start
     current_page = "index"
     all_comments = database.session.execute(database.select(Comment)).scalars().all()
@@ -346,7 +348,6 @@ def index():
     api_url = 'https://api-get-quotes.vercel.app/api/v1/random'
     quote = requests.get(api_url).json()
     quote_text = f"'{quote['quote']['quote']}' - {quote['quote']['author']}"
-    print(f"current user id is ---> {current_user_id}")
     return render_template('index.html',
                            quote = quote_text,
                            comments = global_comments)
@@ -383,7 +384,6 @@ def profile():
     all_replies = database.session.execute(database.select(Subcomment).where(Subcomment.user_id == current_user_id)).scalars().all()
 
     comments = database.session.execute(database.select(Comment).where(Comment.userId == current_user_id)).scalars().all()
-    print(f'comments = {comments} and current_userId = {current_user_id}')
     # comment  = len(comments)!=0 if comments[0] else None
     
     all_replies = database.session.execute(database.select(Subcomment).where(Subcomment.user_id == current_user.id)).scalars().all()
@@ -466,7 +466,6 @@ def comment_profile(user_id):
 def new_comment():
     global current_page,anonymous_mode
     comment_form = CommentForm()
-    print("you are here")
     if comment_form.validate_on_submit():
         new_comment = Comment(
             head = comment_form.head.data,
@@ -728,32 +727,19 @@ def addremove(user_id):
 
 @app.route('/download/<int:comment_id>', methods=['GET'])#11
 def download(comment_id):
-    print("2")
     global percent_gt_01, percent_lt_minus01, percent_between_minus01_to_01
-    print("3")
     labels = ['positive', 'negative', 'neutral']
-    print("4")
     sizes = [percent_gt_01, percent_lt_minus01, percent_between_minus01_to_01]
-    print("5")
     colors = ['green', 'red', 'grey']  # Assign colors for each label
-    print("6")
     plt.figure(figsize=(8, 6))
-    print("7")
     plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140, colors=colors)
-    print("8")
     plt.title('SENTIMENT PIE CHART')
-    print("9")
     plt.savefig(f'pie-data-{comment_id}.pdf', format='pdf')
-    print("10")
 
     file_path = f"pie-data-{comment_id}.pdf" 
-    print("11")
     try:
-        print("12")
-        # Send the file to the client for download
         return send_file(file_path, as_attachment=True)
     except Exception as e:
-        print("13")
         return str(e)
 
 
@@ -774,7 +760,6 @@ def developer():
     global user_data,current_user_id,current_page
     current_page = "developer"
     user = database.session.execute(database.select(User).where(User.id == current_user_id)).scalar()
-    print("this is the user " ,user)
     if request.method == 'POST':     
         user.ApiKey = generate_api_key(length = 32)
         database.session.commit()

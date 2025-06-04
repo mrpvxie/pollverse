@@ -1,0 +1,3 @@
+1. sentiment api ninja key  (prashikdsp)
+2. app pass for SMTP  https://myaccount.google.com/apppasswords (xieminiproject)
+3. deployment 
